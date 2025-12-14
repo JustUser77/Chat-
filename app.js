@@ -1,10 +1,9 @@
 /*********************************
  * 1. KONEKSI SUPABASE
  *********************************/
-
-// 🔴 GANTI DUA BARIS INI SAJA
-const SUPABASE_URL = "https://leidpjprupxslheuzqkj.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlaWRwanBydXB4c2xoZXV6cWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU3MDA4NjQsImV4cCI6MjA4MTI3Njg2NH0.GNDKhRXQ8-hqu2prAKHwU7po09MFlSbbBmqdDhbJMyg";
+// 🔴 GANTI 2 BARIS INI SAJA
+const SUPABASE_URL = "https://PROJECT_ID_KAMU.supabase.co";
+const SUPABASE_KEY = "ANON_PUBLIC_KEY_KAMU";
 
 // 🔵 JANGAN DIUBAH
 const supabase = window.supabase.createClient(
@@ -12,15 +11,11 @@ const supabase = window.supabase.createClient(
   SUPABASE_KEY
 );
 
-
 /*********************************
- * 2. CEK USER LOGIN
+ * 2. CEK LOGIN
  *********************************/
 const user = localStorage.getItem("user");
-if (!user) {
-  location.href = "index.html";
-}
-
+if (!user) location.href = "index.html";
 
 /*********************************
  * 3. AMBIL ELEMEN HTML
@@ -29,7 +24,6 @@ const chatBox = document.getElementById("chatBox");
 const msgInput = document.getElementById("msg");
 const fileInput = document.getElementById("fileInput");
 
-
 /*********************************
  * 4. LOAD PESAN AWAL
  *********************************/
@@ -37,22 +31,20 @@ async function loadMessages() {
   const { data, error } = await supabase
     .from("messages")
     .select("*")
-    .order("created_at", { ascending: true });
+    .order("created_at");
 
   if (error) {
-    console.error("Load error:", error);
+    console.error(error);
     return;
   }
 
   chatBox.innerHTML = "";
   data.forEach(showMessage);
 }
-
 loadMessages();
 
-
 /*********************************
- * 5. REALTIME (INI KUNCI LIVE CHAT)
+ * 5. REALTIME CHAT
  *********************************/
 supabase
   .channel("messages-realtime")
@@ -63,15 +55,12 @@ supabase
       schema: "public",
       table: "messages",
     },
-    payload => {
-      showMessage(payload.new);
-    }
+    payload => showMessage(payload.new)
   )
   .subscribe();
 
-
 /*********************************
- * 6. KIRIM PESAN TEKS
+ * 6. KIRIM TEKS
  *********************************/
 async function send() {
   const text = msgInput.value.trim();
@@ -79,12 +68,11 @@ async function send() {
 
   await supabase.from("messages").insert({
     user: user,
-    text: text,
+    text: text
   });
 
   msgInput.value = "";
 }
-
 
 /*********************************
  * 7. KIRIM FILE
@@ -97,6 +85,47 @@ fileInput.onchange = async () => {
   const file = fileInput.files[0];
   if (!file) return;
 
+  const path = Date.now() + "_" + file.name;
+
+  await supabase.storage
+    .from("files")
+    .upload(path, file);
+
+  const { data } = supabase.storage
+    .from("files")
+    .getPublicUrl(path);
+
+  await supabase.from("messages").insert({
+    user: user,
+    file_url: data.publicUrl,
+    file_name: file.name
+  });
+
+  fileInput.value = "";
+};
+
+/*********************************
+ * 8. TAMPILKAN PESAN
+ *********************************/
+function showMessage(msg) {
+  const div = document.createElement("div");
+  div.className = "msg" + (msg.user === user ? " me" : "");
+
+  if (msg.text) {
+    div.innerHTML = `<b>${msg.user}</b><br>${msg.text}`;
+  } 
+  else if (msg.file_url) {
+    if (msg.file_url.match(/\.(jpg|jpeg|png|gif)$/i)) {
+      div.innerHTML = `<b>${msg.user}</b><br><img src="${msg.file_url}">`;
+    } else {
+      div.innerHTML = `<b>${msg.user}</b><br>
+        <a href="${msg.file_url}" target="_blank">${msg.file_name}</a>`;
+    }
+  }
+
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
   const path = Date.now() + "_" + file.name;
 
   // Upload ke Supabase Storage
