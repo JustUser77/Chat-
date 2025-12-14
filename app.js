@@ -252,4 +252,6 @@ db.ref("messages").on("child_added", snap => {
 
   chatBox.appendChild(div);
   chatBox.scrollTop = chatBox.scrollHeight;
+  window.send = send;
+window.pickFile = pickFile;
 });
