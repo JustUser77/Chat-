@@ -2,8 +2,8 @@
  * 1. KONEKSI SUPABASE
  *********************************/
 // 🔴 GANTI 2 BARIS INI SAJA
-const SUPABASE_URL = "https://PROJECT_ID_KAMU.supabase.co";
-const SUPABASE_KEY = "ANON_PUBLIC_KEY_KAMU";
+const SUPABASE_URL = "https://leidpjprupxslheuzqkj.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlaWRwanBydXB4c2xoZXV6cWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU3MDA4NjQsImV4cCI6MjA4MTI3Njg2NH0.GNDKhRXQ8-hqu2prAKHwU7po09MFlSbbBmqdDhbJMyg";
 
 // 🔵 JANGAN DIUBAH
 const supabase = window.supabase.createClient(
