@@ -2,14 +2,14 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
+  <title>Masuk | WA Mini</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Masuk | ChatSantuy</title>
-  <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>💬 ChatSantuy</h1>
+    <h1>💬 WA Mini</h1>
 
     <div class="card">
       <form id="register-form">
@@ -32,7 +32,7 @@
   <script>
     const supabase = supabase.createClient('https://YOUR_PROJECT.supabase.co', 'YOUR_ANON_KEY');
 
-    // REGISTER
+    // Daftar
     document.getElementById('register-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('reg-email').value;
@@ -46,7 +46,7 @@
       alert('Registrasi berhasil! Silakan login.');
     });
 
-    // LOGIN
+    // Login
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value;
@@ -59,8 +59,7 @@
     });
   </script>
 </body>
-</html>        <input type="file" id="image-input" accept="image/*" />
-        <button type="submit">Kirim</button>
+</html>        <button type="submit">Kirim</button>
       </form>
     </div>
   </div>
