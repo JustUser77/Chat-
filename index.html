@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supabase Chat</title>
+  <title>Masuk | ChatSantuy</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>💬 Supabase Chat</h1>
+    <h1>💬 ChatSantuy</h1>
 
-    <div id="auth-section" class="card">
+    <div class="card">
       <form id="register-form">
         <h2>Daftar</h2>
         <input type="email" id="reg-email" placeholder="Email" required />
@@ -27,14 +27,39 @@
         <button type="submit">Login</button>
       </form>
     </div>
+  </div>
 
-    <div id="chat-section" class="card hidden">
-      <h2>Chat Room</h2>
-      <div id="chat-box"></div>
+  <script>
+    const supabase = supabase.createClient('https://YOUR_PROJECT.supabase.co', 'YOUR_ANON_KEY');
 
-      <form id="message-form">
-        <input type="text" id="message-input" placeholder="Tulis pesan..." required />
-        <input type="file" id="image-input" accept="image/*" />
+    // REGISTER
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+      const name = document.getElementById('reg-name').value;
+
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) return alert('Gagal daftar: ' + error.message);
+
+      await supabase.from('profiles').insert([{ id: data.user.id, display_name: name }]);
+      alert('Registrasi berhasil! Silakan login.');
+    });
+
+    // LOGIN
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) return alert('Login gagal: ' + error.message);
+
+      window.location.href = 'chat.html';
+    });
+  </script>
+</body>
+</html>        <input type="file" id="image-input" accept="image/*" />
         <button type="submit">Kirim</button>
       </form>
     </div>
