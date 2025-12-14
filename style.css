@@ -41,6 +41,7 @@ body {
   flex: 1;
   padding: 10px;
   overflow-y: auto;
+  background: #f0f0f0;
 }
 
 .msg {
@@ -49,6 +50,7 @@ body {
   margin: 5px;
   border-radius: 8px;
   max-width: 70%;
+  word-wrap: break-word;
 }
 
 .me {
@@ -61,6 +63,19 @@ body {
   border-radius: 6px;
 }
 
+.input-box {
+  display: flex;
+  padding: 8px;
+  background: #f0f0f0;
+  position: sticky;
+  bottom: 0;
+}
+
+.input-box input {
+  flex: 1;
+  margin: 0 5px;
+  padding: 8px;
+}
 .input-box {
   display: flex;
   padding: 8px;
