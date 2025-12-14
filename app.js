@@ -1,6 +1,6 @@
 // ================= KONFIGURASI SUPABASE =================
 const SUPABASE_URL = "https://leidpjprupxslheuzqkj.supabase.co"; // ganti dengan milikmu
-const SUPABASE_KEY = "YOUR_ANON_KEY"; // ganti dengan anon key
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlaWRwanBydXB4c2xoZXV6cWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU3MDA4NjQsImV4cCI6MjA4MTI3Njg2NH0.GNDKhRXQ8-hqu2prAKHwU7po09MFlSbbBmqdDhbJMyg"; // ganti dengan anon key
 
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
