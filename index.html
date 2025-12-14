@@ -1,29 +1,45 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Supabase Chat</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
+  <div class="container">
+    <h1>💬 Supabase Chat</h1>
 
-<div class="chat-container">
-  <div class="header">Supabase Chat</div>
+    <div id="auth-section" class="card">
+      <form id="register-form">
+        <h2>Daftar</h2>
+        <input type="email" id="reg-email" placeholder="Email" required />
+        <input type="password" id="reg-password" placeholder="Password" required />
+        <input type="text" id="reg-name" placeholder="Nama Tampilan" required />
+        <button type="submit">Daftar</button>
+      </form>
 
-  <div id="chatBox" class="chat-box"></div>
+      <form id="login-form">
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+      </form>
+    </div>
 
-  <div class="input-box">
-    <input type="file" id="fileInput" hidden>
-    <button id="btnFile">📎</button>
-    <input id="msg" placeholder="Ketik pesan...">
-    <button id="btnSend">➤</button>
+    <div id="chat-section" class="card hidden">
+      <h2>Chat Room</h2>
+      <div id="chat-box"></div>
+
+      <form id="message-form">
+        <input type="text" id="message-input" placeholder="Tulis pesan..." required />
+        <input type="file" id="image-input" accept="image/*" />
+        <button type="submit">Kirim</button>
+      </form>
+    </div>
   </div>
-</div>
 
-<!-- Supabase CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- App.js harus di load terakhir -->
-<script src="app.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
