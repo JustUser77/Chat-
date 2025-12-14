@@ -44,11 +44,11 @@ body {
 }
 
 .msg {
-  max-width: 70%;
+  background: white;
   padding: 8px;
   margin: 5px;
   border-radius: 8px;
-  background: white;
+  max-width: 70%;
 }
 
 .me {
@@ -58,8 +58,20 @@ body {
 
 .msg img {
   width: 150px;
-  border-radius: 5px;
+  border-radius: 6px;
 }
+
+.input-box {
+  display: flex;
+  padding: 8px;
+  background: #f0f0f0;
+}
+
+.input-box input {
+  flex: 1;
+  margin: 0 5px;
+  padding: 8px;
+}}
 
 .msg audio {
   width: 200px;
