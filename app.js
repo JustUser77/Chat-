@@ -1,40 +1,152 @@
+/*********************************
+ * 1. KONEKSI SUPABASE
+ *********************************/
 
-// 🔥 FIREBASE CONFIG
-const firebaseConfig = {
-  apiKey: "AIzaSyAajUtZT27EkqVWJdplMwxkt-OgFIVMMpk",
-  authDomain: "chat--666.firebaseapp.com",
-  databaseURL: "https://chat--666-default-rtdb.firebaseio.com",
-  projectId: "chat--666",
-  storageBucket: "chat--666.appspot.com",
-  messagingSenderId: "383947451184",
-  appId: "1:383947451184:web:dc55c75651081f037336f5"
-};
+// 🔴 GANTI DUA BARIS INI SAJA
+const SUPABASE_URL = "https://leidpjprupxslheuzqkj.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlaWRwanBydXB4c2xoZXV6cWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU3MDA4NjQsImV4cCI6MjA4MTI3Njg2NH0.GNDKhRXQ8-hqu2prAKHwU7po09MFlSbbBmqdDhbJMyg";
 
-firebase.initializeApp(firebaseConfig);
+// 🔵 JANGAN DIUBAH
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-const db = firebase.database();
-const storage = firebase.storage();
 
+/*********************************
+ * 2. CEK USER LOGIN
+ *********************************/
 const user = localStorage.getItem("user");
-if(!user) location.href = "index.html";
+if (!user) {
+  location.href = "index.html";
+}
 
+
+/*********************************
+ * 3. AMBIL ELEMEN HTML
+ *********************************/
 const chatBox = document.getElementById("chatBox");
 const msgInput = document.getElementById("msg");
 const fileInput = document.getElementById("fileInput");
 
-// ================= TEXT =================
-function send(){
-  const text = msgInput.value.trim();
-  if(!text) return;
 
-  db.ref("messages").push({
-    user,
-    text
+/*********************************
+ * 4. LOAD PESAN AWAL
+ *********************************/
+async function loadMessages() {
+  const { data, error } = await supabase
+    .from("messages")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("Load error:", error);
+    return;
+  }
+
+  chatBox.innerHTML = "";
+  data.forEach(showMessage);
+}
+
+loadMessages();
+
+
+/*********************************
+ * 5. REALTIME (INI KUNCI LIVE CHAT)
+ *********************************/
+supabase
+  .channel("messages-realtime")
+  .on(
+    "postgres_changes",
+    {
+      event: "INSERT",
+      schema: "public",
+      table: "messages",
+    },
+    payload => {
+      showMessage(payload.new);
+    }
+  )
+  .subscribe();
+
+
+/*********************************
+ * 6. KIRIM PESAN TEKS
+ *********************************/
+async function send() {
+  const text = msgInput.value.trim();
+  if (!text) return;
+
+  await supabase.from("messages").insert({
+    user: user,
+    text: text,
   });
 
   msgInput.value = "";
 }
 
+
+/*********************************
+ * 7. KIRIM FILE
+ *********************************/
+function pickFile() {
+  fileInput.click();
+}
+
+fileInput.onchange = async () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const path = Date.now() + "_" + file.name;
+
+  // Upload ke Supabase Storage
+  await supabase.storage
+    .from("files")
+    .upload(path, file);
+
+  // Ambil URL publik
+  const { data } = supabase.storage
+    .from("files")
+    .getPublicUrl(path);
+
+  // Simpan ke database
+  await supabase.from("messages").insert({
+    user: user,
+    file_url: data.publicUrl,
+    file_name: file.name,
+  });
+
+  fileInput.value = "";
+};
+
+
+/*********************************
+ * 8. TAMPILKAN PESAN
+ *********************************/
+function showMessage(msg) {
+  const div = document.createElement("div");
+  div.className = "msg" + (msg.user === user ? " me" : "");
+
+  if (msg.text) {
+    div.innerHTML = `<b>${msg.user}</b><br>${msg.text}`;
+  } 
+  else if (msg.file_url) {
+    if (msg.file_url.match(/\.(jpg|jpeg|png|gif)$/i)) {
+      div.innerHTML = `
+        <b>${msg.user}</b><br>
+        <img src="${msg.file_url}">
+      `;
+    } else {
+      div.innerHTML = `
+        <b>${msg.user}</b><br>
+        <a href="${msg.file_url}" target="_blank">${msg.file_name}</a>
+      `;
+    }
+  }
+
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
 // ================= FILE =================
 function pickFile(){
   fileInput.click();
